@@ -1,3 +1,4 @@
+//Auth
 import authServices from "./auth.services.js";
 import { SuccessResponceHandle } from "../common/helper/helper.js";
 
@@ -41,3 +42,4 @@ class authController {
 }
 
 export default authController;
+
