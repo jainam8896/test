@@ -1,0 +1,149 @@
+openapi: 3.0.0
+
+info:
+  title: Test App API
+  description: OpenAPI specification
+  version: 1.0.0
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    Success:
+      description: Ok
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: success
+
+    UnauthorizedError:
+      description: |
+        - Invalid credentials
+        - Expired access or refresh token
+        - Revoked access or refresh token
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Unauthorized
+
+    NoContent:
+      description: |
+        - Empty body content
+      content:
+        application/json:
+          schema:
+            type: object
+
+    UnprocessableEntity:
+      description: Validation errors
+      content:
+        application/json:
+          schema:
+            type: object
+
+    ConflictError:
+      description: Account already registered with given email
+      content:
+        application/json:
+          schema:
+            type: object
+
+    PreconditionFailedException:
+      description: Account does not exist
+      content:
+        application/json:
+          schema:
+            type: object
+
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Bad request
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: Resource not found
+
+paths:
+  # auth
+
+  /auth/register:
+    post:
+      summary: Register User [ PLAYER ]
+      description: Register a new user. Either upload a profile image file OR select an avatar (isAvatarSelected=true with avatarId). At least one is required.
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fullName:
+                  type: string
+                  example: "John Doe"
+                email:
+                  type: string
+                  example: test@example.com
+                password:
+                  type: string
+                  example: passworD@123
+      responses:
+        "200":  
+          $ref: "#/components/responses/Success"
+        "409":
+          $ref: "#/components/responses/ConflictError"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+
+  /auth/login:
+    post:
+      summary: Login With Email And Password
+      description: Login with email and password
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: test@example.com
+                password:
+                  type: string
+                  example: passworD@123
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        "409":
+          $ref: "#/components/responses/ConflictError"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity" 
